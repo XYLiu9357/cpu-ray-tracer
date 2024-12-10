@@ -7,20 +7,19 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include "elements/point3.hpp"
 #include "utils/vec3.hpp"
 
-class ray {
+class Ray {
 private:
-    point3 orig;
-    vec3 dir;
+    Point3 orig;
+    Vec3 dir;
 
 public:
-    ray();
-    ray(const point3& origin, const vec3& direction);
-    const point3& origin() const;
-    const vec3& direction() const;
-    point3 at(double t) const;
+    Ray();
+    Ray(const Point3& origin, const Vec3& direction);
+    const Point3& origin() const;
+    const Vec3& direction() const;
+    Point3 at(double t) const;
 };
 
 #endif // RAY_H

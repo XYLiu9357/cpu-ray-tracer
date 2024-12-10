@@ -10,8 +10,10 @@ env:
 
 tasks:
   default:
+    - task: clean-all
     - task: build
     - task: run
+    - feh output/img*.ppm
 
   build:
     cmds:
