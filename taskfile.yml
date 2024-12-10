@@ -1,0 +1,42 @@
+version: "3"
+
+env:
+  GCC: /usr/bin/g++
+  CLANG: /usr/bin/clang++
+  DEBUG: -DCMAKE_BUILD_TYPE=Debug
+  RELEASE: -DCMAKE_BUILD_TYPE=Release
+  FLAGS: -Wall -Wextra -Wpedantic
+  EXEC_PATH: build/ray-tracer
+
+tasks:
+  default:
+    - task: build
+    - task: run
+
+  build:
+    cmds:
+      - task: clean-build
+      - cmake -S . -B build -DCMAKE_CXX_COMPILER=${CLANG} ${DEBUG} -DCMAKE_CXX_FLAGS=${FLAGS}
+      - cmake --build build
+
+  run:
+    cmds:
+      - mkdir -p output
+      - bash -c "${EXEC_PATH} > output/img-$(date +%Y-%m-%d_%H-%M-%S).ppm"
+
+  valgrind:
+    cmds:
+      - valgrind --leak-check=full --show-leak-kinds=all ${EXEC_PATH}
+
+  gdb:
+    cmds:
+      - gdb ${EXEC_PATH}
+
+  clean-build:
+    cmds:
+      - rm -r build || true
+
+  clean-all:
+    cmds:
+      - task: clean-build
+      - rm -r output || true
