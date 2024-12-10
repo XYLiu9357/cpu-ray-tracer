@@ -8,8 +8,13 @@ include_directories(src)
 
 set(SRC_FILES
     src/main.cpp
+    src/camera/camera.cpp
+    src/elements/color.cpp
     src/elements/ray.cpp
+    src/hittables/sphere.cpp
+    src/hittables/hittable-list.cpp
     src/utils/vec3.cpp
+    src/utils/interval.cpp
 )
 
 # build executables
