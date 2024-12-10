@@ -1,10 +1,10 @@
 /**camera.hpp
- *
- * Camera class for:
- * 1. constructing and dispatching rays.
- * 2. rendering the final image.
- *
- */
+*
+* Camera class for:
+* 1. constructing and dispatching rays.
+* 2. rendering the final image.
+*
+*/
 
 #ifndef CAMERA_H
 #define CAMERA_H
