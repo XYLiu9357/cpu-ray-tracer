@@ -9,7 +9,8 @@
 
 #include <iostream>
 
-class Vec3 {
+class Vec3
+{
 private:
     double e[3];
 public:
