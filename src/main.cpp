@@ -1,9 +1,17 @@
+/**main.cpp
+*
+* Main
+*
+*/
+
 #include <iostream>
+
+#include "elements/color.hpp"
 
 int main() {
     // image specs
-    int image_width = 4096;
-    int image_height = 2048;
+    int image_width = 256;
+    int image_height = 256;
 
     // P3 for ppm, width and height, max_val for RGB channels
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
@@ -13,17 +21,8 @@ int main() {
         std::clog << "\rLines pending for render: " << (image_height - i) << ' ' << std::flush;
         for (int j = 0; j < image_width; ++j) 
         {
-            // internal representation
-            auto r = double(j) / (image_width - 1);
-            auto g = double(i) / (image_height - 1);
-            auto b = 0.0;
-            
-            // scale to [0, 255]
-            int ir = int(255.999 * r);
-            int ig = int(255.999 * g);
-            int ib = int(255.999 * b);
-            
-            std::cout << ir << " " << ig << " " << ib << "\n";
+            auto pixel_color = color(double(i)/(image_width-1), double(j)/(image_height-1), 0);
+            write_color(std::cout, pixel_color);
         }
     }
     std::clog << "\rDone.                      \n";
