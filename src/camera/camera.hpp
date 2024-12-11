@@ -21,19 +21,37 @@ private:
     double viewport_width, viewport_height;
 
     double focal_length;
-    Point3 center; 
+    Point3 camera_center; 
     Vec3 pixel_delta_u, pixel_delta_v;
     Point3 pixel00_loc;
+
+    int samples_per_pixel;
+    double pixel_samples_scale;
+    
+    // Check if the parameters given are valid
+    bool check_params();
     
     // Initialize camera based on provided specs
     void init();
 
-    // Construct rays
+    // Pixel sampling
+    Vec3 sample_square() const; // [-0.5, 0.5] * [-0.5, 0.5] square sample
+    Ray get_ray(int i, int j) const; // Ray from origin to sampled point
+    
+    // Ray attributes
     Color ray_color(const Ray& r, const Hittable& world) const;
 
 public:
-    // Constructor: calls init()
-    Camera(int image_width, double aspect_ratio, double focal_length = 1.0, double viewport_height = 2.0);
+    // Constructor
+    Camera();
+
+    // Mutators
+    void set_image_width(int image_width);
+    void set_aspect_ratio(double aspect_ratio);
+    void set_viewport_height(double viewport_height);
+    void set_focal_length(double focal_length);
+    void set_camera_center(Point3 camera_center);
+    void set_samples_per_pixel(int samples_per_pixel);
 
     // Render image and output to stdout
     void render(const Hittable& world);

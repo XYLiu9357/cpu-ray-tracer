@@ -16,6 +16,9 @@ public:
     double size() const;
     bool contains(double x) const; // Include boundaries
     bool surrounds(double x) const; // Exclude boundaries
+    
+    double clamp(double x) const;
+    
     static const Interval empty, universe;
 };
 

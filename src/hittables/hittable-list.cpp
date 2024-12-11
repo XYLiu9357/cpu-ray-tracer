@@ -7,11 +7,12 @@
 #include "hittables/hittable-list.hpp"
 
 HittableList::HittableList() {}
+
 HittableList::HittableList(std::shared_ptr<Hittable> object) { this->add(object); }
+
 void HittableList::clear() { objects.clear(); }
 
 void HittableList::add(std::shared_ptr<Hittable> object) { objects.push_back(object); }
-
 
 bool HittableList::hit(const Ray& r, Interval ray_t, HitRecord& rec) const
 {

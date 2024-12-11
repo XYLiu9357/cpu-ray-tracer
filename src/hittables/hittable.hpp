@@ -15,6 +15,12 @@ struct HitRecord
     Point3 p;
     Vec3 normal; // Outward unit normal
     double t;
+    bool front_face;
+    
+    // Determine side at geometry time by defining this->normal to always
+    // point out of the surface. front_face = true if ray is incident
+    // on surface from the outside.
+    void set_face_normal(const Ray& r, const Vec3& outward_normal);
 };
 
 class Hittable

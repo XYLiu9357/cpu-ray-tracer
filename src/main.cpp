@@ -19,6 +19,8 @@ int main() {
     auto aspect_ratio = 16.0 / 9.0;
     auto focal_length = 1.0;
     auto viewport_height = 2.0;
+    auto camera_center = Point3(0, 0, 0);
+    auto samples_per_pixel = 100;
     
     // World
     HittableList world;
@@ -26,7 +28,13 @@ int main() {
     world.add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100));
     
     // Camera
-    Camera cam (image_width, aspect_ratio, focal_length, viewport_height);
+    Camera cam;
+    cam.set_image_width(image_width);
+    cam.set_aspect_ratio(aspect_ratio);
+    cam.set_viewport_height(viewport_height);
+    cam.set_focal_length(focal_length);
+    cam.set_camera_center(camera_center);
+    cam.set_samples_per_pixel(samples_per_pixel);
     cam.render(world);
 }
 
