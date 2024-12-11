@@ -1,2 +1,2 @@
 # ray-tracer
-Cpp ray tracer
+CPU ray tracer
