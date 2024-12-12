@@ -44,3 +44,7 @@ double Vec3::length_squared() const { return e[0]*e[0] + e[1]*e[1] + e[2]*e[2]; 
 Vec3 Vec3::random() { return Vec3(random_double(), random_double(), random_double()); }
 Vec3 Vec3::random(double min, double max) { return Vec3(random_double(min, max), random_double(min, max), random_double(min, max)); }
 
+// Return true if the vector is close to zero in all dimensions.
+bool Vec3::near_zero(double epsilon) const {
+    return (std::fabs(e[0]) < epsilon) && (std::fabs(e[1]) < epsilon) && (std::fabs(e[2]) < epsilon);
+}

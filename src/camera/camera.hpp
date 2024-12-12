@@ -11,6 +11,7 @@
 
 #include "elements/color.hpp"
 #include "elements/ray.hpp"
+#include "elements/material.hpp"
 #include "hittables/hittable.hpp"
 #include "utils/vec3.hpp"
 

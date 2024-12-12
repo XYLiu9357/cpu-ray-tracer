@@ -5,15 +5,17 @@
 */
 
 #include <cmath>
+#include <memory>
 #include <stdexcept>
 
 #include "hittables/sphere.hpp"
 
-Sphere::Sphere(const Point3& center, double radius)
-    : center(center)
+Sphere::Sphere(const Point3& center, double radius, std::shared_ptr<Material> mat)
 {
     if (radius < 0) throw std::invalid_argument("Sphere: radius must be nonnegative");
-    else this->radius = radius;
+    this->center = center;
+    this->radius = radius;
+    this->mat = mat;
 }
 
 bool Sphere::hit(const Ray& r, Interval ray_t, HitRecord &rec) const
@@ -42,6 +44,7 @@ bool Sphere::hit(const Ray& r, Interval ray_t, HitRecord &rec) const
     // Store results in hit record struct
     rec.t = root;
     rec.p = r.at(rec.t);
+    rec.mat = mat;
     Vec3 outward_normal = (rec.p - center) / radius;
     rec.set_face_normal(r, outward_normal);
 

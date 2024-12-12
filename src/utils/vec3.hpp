@@ -35,6 +35,8 @@ public:
 
     static Vec3 random();
     static Vec3 random(double min, double max);
+
+    bool near_zero(double epsilon = 0.8) const;
 };
 
 // Point class alias
@@ -88,5 +90,9 @@ inline Vec3 random_unit_vector()
 //     else
 //         return -on_unit_sphere;
 // }
+
+inline Vec3 reflect(const Vec3& v, const Vec3& n) {
+    return v - 2 * dot(v, n) * n;
+}
 
 #endif // VEC3_H

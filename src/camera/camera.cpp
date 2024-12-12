@@ -124,14 +124,18 @@ Color Camera::ray_color(const Ray& r, int depth, const Hittable& world) const
     if (depth <= 0) return Color(0, 0, 0);
 
     HitRecord rec;
+
+    // Hit
     if (world.hit(r, Interval(0.00001, +INF), rec))
     {
-        // Lambertian reflection
-        Vec3 direction = rec.normal + random_unit_vector();
-        return 0.5 * ray_color(Ray(rec.p, direction), depth - 1, world);
+        Ray scattered;
+        Color attenuation;
+        if (rec.mat->scatter(r, rec, attenuation, scattered))
+            return attenuation * ray_color(scattered, depth - 1, world);
+        return Color(0,0,0);
     }
 
-    // No hit
+    // No hit: render background
     Vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);

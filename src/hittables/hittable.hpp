@@ -7,13 +7,17 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
+#include <memory>
 #include "elements/ray.hpp"
 #include "utils/interval.hpp"
+
+class Material; // Define later, resolves circular include
 
 struct HitRecord
 {
     Point3 p;
     Vec3 normal; // Outward unit normal
+    std::shared_ptr<Material> mat;
     double t;
     bool front_face;
     
