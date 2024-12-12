@@ -4,7 +4,7 @@
 *
 */
 
-#include <cmath>
+#include "constants.hpp"
 #include "vec3.hpp"
 
 Vec3::Vec3() : e{0,0,0} {}
@@ -39,4 +39,8 @@ Vec3& Vec3::operator/=(double t){ return *this *= 1/t; }
 double Vec3::length() const { return std::sqrt(length_squared()); }
 
 double Vec3::length_squared() const { return e[0]*e[0] + e[1]*e[1] + e[2]*e[2]; }
+
+// Random vector utilities
+Vec3 Vec3::random() { return Vec3(random_double(), random_double(), random_double()); }
+Vec3 Vec3::random(double min, double max) { return Vec3(random_double(min, max), random_double(min, max), random_double(min, max)); }
 

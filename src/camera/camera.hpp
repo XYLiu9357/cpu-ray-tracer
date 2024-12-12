@@ -16,17 +16,22 @@
 
 class Camera {
 private:
+    // Image, viewport, and camera
     int image_width, image_height;
     double aspect_ratio;
     double viewport_width, viewport_height;
-
+    
     double focal_length;
     Point3 camera_center; 
     Vec3 pixel_delta_u, pixel_delta_v;
     Point3 pixel00_loc;
 
+    // Antialiasing
     int samples_per_pixel;
     double pixel_samples_scale;
+
+    // Diffusion
+    int max_depth;
     
     // Check if the parameters given are valid
     bool check_params();
@@ -39,7 +44,7 @@ private:
     Ray get_ray(int i, int j) const; // Ray from origin to sampled point
     
     // Ray attributes
-    Color ray_color(const Ray& r, const Hittable& world) const;
+    Color ray_color(const Ray& r, int depth, const Hittable& world) const;
 
 public:
     // Constructor
@@ -52,6 +57,7 @@ public:
     void set_focal_length(double focal_length);
     void set_camera_center(Point3 camera_center);
     void set_samples_per_pixel(int samples_per_pixel);
+    void set_max_depth(int max_depth);
 
     // Render image and output to stdout
     void render(const Hittable& world);

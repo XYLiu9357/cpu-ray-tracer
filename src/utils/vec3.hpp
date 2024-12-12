@@ -7,6 +7,7 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include <cmath>
 #include <iostream>
 
 class Vec3
@@ -31,6 +32,9 @@ public:
 
     double length() const;
     double length_squared() const;
+
+    static Vec3 random();
+    static Vec3 random(double min, double max);
 };
 
 // Point class alias
@@ -61,5 +65,28 @@ inline Vec3 cross(const Vec3& u, const Vec3& v)
 }
 
 inline Vec3 unit_vector(const Vec3& v) { return v / v.length(); }
+
+inline Vec3 random_unit_vector()
+{
+    // Rejection sampling
+    while (true) {
+        auto p = Vec3::random(-1, 1);
+        auto lensq = p.length_squared();
+
+        // Catch underflow and reject
+        if (1e-160 < lensq && lensq <= 1)
+            return p / sqrt(lensq);
+    }
+}
+
+// inline Vec3 random_on_hemisphere(const Vec3& normal)
+// {
+//     Vec3 on_unit_sphere = random_unit_vector();
+//     // In the same hemisphere as the normal
+//     if (dot(on_unit_sphere, normal) > 0.0)
+//         return on_unit_sphere;
+//     else
+//         return -on_unit_sphere;
+// }
 
 #endif // VEC3_H

@@ -12,7 +12,8 @@
 
 Camera::Camera()
     : image_width(-1), aspect_ratio(-1.0), viewport_height(-1.0), 
-    focal_length(-1.0), camera_center(Point3(0, 0, 0)), samples_per_pixel(0) {}
+    focal_length(-1.0), camera_center(Point3(0, 0, 0)), 
+    samples_per_pixel(100), max_depth(10) {}
 
 // Setters
 void Camera::set_image_width(int image_width)
@@ -46,8 +47,14 @@ void Camera::set_camera_center(Point3 camera_center)
 
 void Camera::set_samples_per_pixel(int samples_per_pixel)
 {
-    if (samples_per_pixel < 0) throw std::domain_error("Camera: samples_per_pixel should be a nonnegative integer.");
+    if (samples_per_pixel <= 0) throw std::domain_error("Camera: samples_per_pixel should be a positive integer.");
     this->samples_per_pixel = samples_per_pixel;
+}
+
+void Camera::set_max_depth(int max_depth)
+{
+    if (max_depth <= 0) throw std::domain_error("Camera: max_depth should be a positive integer.");
+    this->max_depth = max_depth;
 }
 
 // Parameter check
@@ -92,11 +99,13 @@ void Camera::init()
 }
 
 // Pixel sampling
-Vec3 Camera::sample_square() const {
+Vec3 Camera::sample_square() const
+{
     return Vec3(random_double() - 0.5, random_double() - 0.5, 0);
 }
 
-Ray Camera::get_ray(int i, int j) const {
+Ray Camera::get_ray(int i, int j) const
+{
     auto offset = sample_square();
     auto pixel_sample = pixel00_loc
                       + ((i + offset.x()) * pixel_delta_u)
@@ -109,12 +118,19 @@ Ray Camera::get_ray(int i, int j) const {
 }
 
 // Ray coloring
-Color Camera::ray_color(const Ray& r, const Hittable& world) const
+Color Camera::ray_color(const Ray& r, int depth, const Hittable& world) const
 {
+    // End recursion if diffusion depth limit exceeded
+    if (depth <= 0) return Color(0, 0, 0);
+
     HitRecord rec;
-    if (world.hit(r, Interval(0, +INF), rec))
-        return 0.5 * (rec.normal + Color(1,1,1));
-    
+    if (world.hit(r, Interval(0.00001, +INF), rec))
+    {
+        // Lambertian reflection
+        Vec3 direction = rec.normal + random_unit_vector();
+        return 0.5 * ray_color(Ray(rec.p, direction), depth - 1, world);
+    }
+
     // No hit
     Vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5 * (unit_direction.y() + 1.0);
@@ -139,7 +155,7 @@ void Camera::render(const Hittable& world)
             for (int sample = 0; sample < samples_per_pixel; sample++)
             {
                 Ray r = get_ray(i, j);
-                pixel_color += ray_color(r, world);
+                pixel_color += ray_color(r, max_depth, world);
             }
             write_color(std::cout, pixel_samples_scale * pixel_color);
         }

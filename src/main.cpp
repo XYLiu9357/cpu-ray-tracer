@@ -20,7 +20,6 @@ int main() {
     auto focal_length = 1.0;
     auto viewport_height = 2.0;
     auto camera_center = Point3(0, 0, 0);
-    auto samples_per_pixel = 100;
     
     // World
     HittableList world;
@@ -34,7 +33,8 @@ int main() {
     cam.set_viewport_height(viewport_height);
     cam.set_focal_length(focal_length);
     cam.set_camera_center(camera_center);
-    cam.set_samples_per_pixel(samples_per_pixel);
+    cam.set_samples_per_pixel(100);
+    cam.set_max_depth(10);
     cam.render(world);
 }
 
