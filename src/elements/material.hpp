@@ -39,4 +39,15 @@ public:
     bool scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) const override;
 };
 
+class Dielectric : public Material
+{
+private:
+    double refraction_index;
+    static double reflectance(double cosine, double refraction_index);
+
+public:
+    Dielectric(double refraction_index);
+    bool scatter(const Ray& r_in, const HitRecord& rec, Color& attenuation, Ray& scattered) const override;
+};
+
 #endif // MATERIAL_H
