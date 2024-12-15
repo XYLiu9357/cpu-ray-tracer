@@ -10,7 +10,6 @@ env:
 
 tasks:
   default:
-    - task: clean-all
     - task: build
     - task: run
     - feh output/img*.ppm
@@ -42,3 +41,4 @@ tasks:
     cmds:
       - task: clean-build
       - rm -r output || true
+
