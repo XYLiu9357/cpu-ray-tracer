@@ -6,14 +6,16 @@
 *
 */
 
+#include <cmath>
 #include <stdexcept>
 #include "constants.hpp"
 #include "camera/camera.hpp"
 
 Camera::Camera()
-    : image_width(-1), aspect_ratio(-1.0), viewport_height(-1.0), 
-    focal_length(-1.0), camera_center(Point3(0, 0, 0)), 
-    samples_per_pixel(100), max_depth(10) {}
+    : image_width(-1), image_height(-1), aspect_ratio(-1.0), 
+    viewport_width(-1.0), viewport_height(-1), lookfrom(Point3(0, 0, 0)), 
+    lookat(Point3(0, 0, -1)), vup(Vec3(0, 1, 0)), samples_per_pixel(100), 
+    max_depth(10), vfov(90) {}
 
 // Setters
 void Camera::set_image_width(int image_width)
@@ -28,21 +30,16 @@ void Camera::set_aspect_ratio(double aspect_ratio)
     this->aspect_ratio = aspect_ratio;
 }
 
-void Camera::set_viewport_height(double viewport_height)
+void Camera::set_camera_orientation(Point3 lookfrom, Point3 lookat, Vec3 vup)
 {
-    if (viewport_height <= 0) throw std::domain_error("Camera: viewport_height should be a positive real number.");
-    this->viewport_height = viewport_height;
+    this->lookfrom = lookfrom;
+    this->lookat = lookat;
+    this->vup = vup;
 }
 
-void Camera::set_focal_length(double focal_length)
+void Camera::set_vfov(double vfov)
 {
-    if (focal_length <= 0) throw std::domain_error("Camera: focal_length should be a positive real number.");
-    this->focal_length = focal_length;
-}
-
-void Camera::set_camera_center(Point3 camera_center)
-{
-    this->camera_center = camera_center;
+    this->vfov = vfov;
 }
 
 void Camera::set_samples_per_pixel(int samples_per_pixel)
@@ -57,18 +54,17 @@ void Camera::set_max_depth(int max_depth)
     this->max_depth = max_depth;
 }
 
+
 // Parameter check
 bool Camera::check_params()
 {
     bool image_width_given = image_width != -1;
     bool aspect_ratio_given = aspect_ratio != -1.0;
-    bool viewport_height_given = viewport_height != -1.0;
-    bool focal_length_given = focal_length != -1.0;
+    bool vfov_given = vfov != -1.0;
     
     return (image_width_given
-            && aspect_ratio_given 
-            && viewport_height_given
-            && focal_length_given);
+            && aspect_ratio_given
+            && vfov_given);
 }
 
 // Initialize camera
@@ -77,21 +73,32 @@ void Camera::init()
     // Check parameters
     if (!check_params()) throw std::out_of_range("Camera: Insufficient parameters.");
 
-    // Image and viewport specs
-    this->image_height = int(image_width / aspect_ratio);
-    this->image_height = (this->image_height < 1) ? 1 : this->image_height;
-    this->viewport_width = viewport_height * (static_cast<double>(image_width) / image_height);
+    // Image specs
+    image_height = int(image_width / aspect_ratio);
+    image_height = (this->image_height < 1) ? 1 : this->image_height;
+    
+    // Viewport specs
+    focal_length = (lookfrom - lookat).length();
+    auto theta = degrees_to_radians(vfov);
+    auto h = std::tan(theta / 2);
+    viewport_height = 2 * h * focal_length;
+    viewport_width = viewport_height * (double(image_width) / image_height);
 
-    // Coordinate vectors and deltas
-    auto viewport_u = Vec3(viewport_width, 0, 0);
-    auto viewport_v = Vec3(0, -viewport_height, 0);
-    this->pixel_delta_u = viewport_u / image_width;
-    this->pixel_delta_v = viewport_v / image_height;
+    camera_center = lookfrom;
+
+    // Camera basis vectors
+    w = unit_vector(lookfrom - lookat);
+    u = unit_vector(cross(vup, w));
+    v = cross(w, u);
+
+    // Viewport vectors
+    Vec3 viewport_u = viewport_width * u;
+    Vec3 viewport_v = (-1) * viewport_height * v;
+    pixel_delta_u = viewport_u / image_width;
+    pixel_delta_v = viewport_v / image_height;
 
     // Upper left pixel: x = right, y = up, z = front
-    // Since camera is in front of the viewport, -focal_length is on viewport
-    // 0.5 delta displacement from upper left corner is the upper left pixel
-    auto viewport_upper_left = camera_center - Vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
+    auto viewport_upper_left = camera_center - (focal_length * w) - viewport_u / 2 - viewport_v / 2;
     this->pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
     // Pixel sampling for antialiasing

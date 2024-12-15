@@ -21,11 +21,16 @@ private:
     int image_width, image_height;
     double aspect_ratio;
     double viewport_width, viewport_height;
-    
     double focal_length;
-    Point3 camera_center; 
     Vec3 pixel_delta_u, pixel_delta_v;
     Point3 pixel00_loc;
+    
+    // Camera orientation
+    Point3 camera_center;
+    Point3 lookfrom;
+    Point3 lookat;
+    Vec3 vup;
+    Vec3 u, v, w;
 
     // Antialiasing
     int samples_per_pixel;
@@ -33,6 +38,9 @@ private:
 
     // Diffusion
     int max_depth;
+
+    // Positionable camera
+    double vfov;
     
     // Check if the parameters given are valid
     bool check_params();
@@ -54,9 +62,8 @@ public:
     // Mutators
     void set_image_width(int image_width);
     void set_aspect_ratio(double aspect_ratio);
-    void set_viewport_height(double viewport_height);
-    void set_focal_length(double focal_length);
-    void set_camera_center(Point3 camera_center);
+    void set_camera_orientation(Point3 lookfrom, Point3 lookat, Vec3 vup);
+    void set_vfov(double vfov);
     void set_samples_per_pixel(int samples_per_pixel);
     void set_max_depth(int max_depth);
 
