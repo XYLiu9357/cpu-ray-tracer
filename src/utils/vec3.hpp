@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <iostream>
+#include "constants.hpp"
 
 class Vec3
 {
@@ -78,6 +79,14 @@ inline Vec3 random_unit_vector()
         // Catch underflow and reject
         if (1e-160 < lensq && lensq <= 1)
             return p / sqrt(lensq);
+    }
+}
+
+inline Vec3 random_in_unit_disk() {
+    while (true) {
+        auto p = Vec3(random_double(-1, 1), random_double(-1, 1), 0);
+        if (p.length_squared() < 1)
+            return p;
     }
 }
 

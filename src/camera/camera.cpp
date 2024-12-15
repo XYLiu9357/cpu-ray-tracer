@@ -13,9 +13,9 @@
 
 Camera::Camera()
     : image_width(-1), image_height(-1), aspect_ratio(-1.0), 
-    viewport_width(-1.0), viewport_height(-1), lookfrom(Point3(0, 0, 0)), 
-    lookat(Point3(0, 0, -1)), vup(Vec3(0, 1, 0)), samples_per_pixel(100), 
-    max_depth(10), vfov(90) {}
+    viewport_width(-1.0), viewport_height(-1), vfov(90), 
+    lookfrom(Point3(0, 0, 0)), lookat(Point3(0, 0, -1)), vup(Vec3(0, 1, 0)), 
+    defocus_angle(-1.0), focus_dist(-1.0) , samples_per_pixel(100), max_depth(10) {}
 
 // Setters
 void Camera::set_image_width(int image_width)
@@ -35,6 +35,12 @@ void Camera::set_camera_orientation(Point3 lookfrom, Point3 lookat, Vec3 vup)
     this->lookfrom = lookfrom;
     this->lookat = lookat;
     this->vup = vup;
+}
+
+void Camera::set_defocus_blur(double defocus_angle, double focus_dist)
+{
+    this->defocus_angle = defocus_angle;
+    this->focus_dist = focus_dist;
 }
 
 void Camera::set_vfov(double vfov)
@@ -61,10 +67,12 @@ bool Camera::check_params()
     bool image_width_given = image_width != -1;
     bool aspect_ratio_given = aspect_ratio != -1.0;
     bool vfov_given = vfov != -1.0;
+    bool defocus_blur_params_given = (defocus_angle != -1.0) && (focus_dist != -1.0);
     
     return (image_width_given
             && aspect_ratio_given
-            && vfov_given);
+            && vfov_given
+            && defocus_blur_params_given);
 }
 
 // Initialize camera
@@ -78,10 +86,9 @@ void Camera::init()
     image_height = (this->image_height < 1) ? 1 : this->image_height;
     
     // Viewport specs
-    focal_length = (lookfrom - lookat).length();
     auto theta = degrees_to_radians(vfov);
     auto h = std::tan(theta / 2);
-    viewport_height = 2 * h * focal_length;
+    viewport_height = 2 * h * focus_dist;
     viewport_width = viewport_height * (double(image_width) / image_height);
 
     camera_center = lookfrom;
@@ -98,8 +105,13 @@ void Camera::init()
     pixel_delta_v = viewport_v / image_height;
 
     // Upper left pixel: x = right, y = up, z = front
-    auto viewport_upper_left = camera_center - (focal_length * w) - viewport_u / 2 - viewport_v / 2;
+    auto viewport_upper_left = camera_center - (focus_dist * w) - viewport_u / 2 - viewport_v / 2;
     this->pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
+    // Defocus disk basis
+    auto defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle / 2));
+    defocus_disk_u = u * defocus_radius;
+    defocus_disk_v = v * defocus_radius;
 
     // Pixel sampling for antialiasing
     this->pixel_samples_scale = 1.0 / samples_per_pixel;
@@ -118,10 +130,17 @@ Ray Camera::get_ray(int i, int j) const
                       + ((i + offset.x()) * pixel_delta_u)
                       + ((j + offset.y()) * pixel_delta_v);
 
-    auto ray_origin = camera_center;
+    auto ray_origin = (defocus_angle <= 0) ? camera_center : defocus_disk_sample();
     auto ray_direction = pixel_sample - ray_origin;
 
     return Ray(ray_origin, ray_direction);
+}
+
+
+// Returns a random point in the camera defocus disk
+Point3 Camera::defocus_disk_sample() const {
+    auto p = random_in_unit_disk();
+    return camera_center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
 }
 
 // Ray coloring

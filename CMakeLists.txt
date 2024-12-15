@@ -20,6 +20,7 @@ set(SRC_FILES
     
     src/utils/vec3.cpp
     src/utils/interval.cpp
+    src/utils/worldgen.cpp
 )
 
 # build executables

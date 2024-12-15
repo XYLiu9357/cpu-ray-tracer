@@ -21,16 +21,23 @@ private:
     int image_width, image_height;
     double aspect_ratio;
     double viewport_width, viewport_height;
-    double focal_length;
+    // double focal_length;
     Vec3 pixel_delta_u, pixel_delta_v;
     Point3 pixel00_loc;
     
     // Camera orientation
+    double vfov;
     Point3 camera_center;
     Point3 lookfrom;
     Point3 lookat;
     Vec3 vup;
     Vec3 u, v, w;
+
+    // Defocus blur
+    double defocus_angle;
+    double focus_dist;
+    Vec3 defocus_disk_u;
+    Vec3 defocus_disk_v;
 
     // Antialiasing
     int samples_per_pixel;
@@ -38,9 +45,6 @@ private:
 
     // Diffusion
     int max_depth;
-
-    // Positionable camera
-    double vfov;
     
     // Check if the parameters given are valid
     bool check_params();
@@ -51,6 +55,9 @@ private:
     // Pixel sampling
     Vec3 sample_square() const; // [-0.5, 0.5] * [-0.5, 0.5] square sample
     Ray get_ray(int i, int j) const; // Ray from origin to sampled point
+    
+    // Defocus blur sampling
+    Point3 defocus_disk_sample() const;
     
     // Ray attributes
     Color ray_color(const Ray& r, int depth, const Hittable& world) const;
@@ -63,6 +70,7 @@ public:
     void set_image_width(int image_width);
     void set_aspect_ratio(double aspect_ratio);
     void set_camera_orientation(Point3 lookfrom, Point3 lookat, Vec3 vup);
+    void set_defocus_blur(double defocus_angle, double focus_dist);
     void set_vfov(double vfov);
     void set_samples_per_pixel(int samples_per_pixel);
     void set_max_depth(int max_depth);
