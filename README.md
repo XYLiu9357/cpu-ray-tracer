@@ -1,4 +1,4 @@
-# cpu-ray-tracer
+# CPU Ray Tracer
 
 CPU ray tracer parallelized with OpenMP.
 
@@ -11,7 +11,7 @@ CPU ray tracer parallelized with OpenMP.
 - Defocus blur
 - Multiprocessing parallelization
 
-## Rendered sample image
+## Sample Image
 
 ![Image sample 1](img/img-sample-1.png)
 
