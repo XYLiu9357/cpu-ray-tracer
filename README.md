@@ -13,5 +13,5 @@ CPU ray tracer parallelized with OpenMP.
 
 ## Rendered sample image
 
-![Image sample 1](img/img-sample-1.ppm)
+![Image sample 1](img/img-sample-1.png)
 
