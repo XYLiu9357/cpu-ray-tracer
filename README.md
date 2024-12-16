@@ -2,14 +2,16 @@
 
 CPU ray tracer parallelized with OpenMP.
 
-Included features:
+## Features
+
 - Antialiasing
 - Diffusion
 - Reflection & refraction
 - Camera positioning
 - Defocus blur
+- Multiprocessing parallelization
 
-Rendered sample image
+## Rendered sample image
 
-![img/img-sample-1.ppm]
+![Image sample 1](img/img-sample-1.ppm)
 
