@@ -5,7 +5,7 @@ env:
   CLANG: /usr/bin/clang++
   DEBUG: -DCMAKE_BUILD_TYPE=Debug
   RELEASE: -DCMAKE_BUILD_TYPE=Release
-  FLAGS: -Wall -Wextra -Wpedantic
+  FLAGS: -O3 # -Wall -Wextra -Wpedantic
   EXEC_PATH: build/ray-tracer
 
 tasks:
@@ -18,7 +18,7 @@ tasks:
   build:
     cmds:
       - task: clean-build
-      - cmake -S . -B build -DCMAKE_CXX_COMPILER=${CLANG} ${DEBUG} -DCMAKE_CXX_FLAGS=${FLAGS}
+      - cmake -S . -B build -DCMAKE_CXX_COMPILER=${CLANG} ${RELEASE} -DCMAKE_CXX_FLAGS=${FLAGS}
       - cmake --build build
 
   run:

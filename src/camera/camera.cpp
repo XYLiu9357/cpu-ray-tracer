@@ -177,9 +177,10 @@ void Camera::render(const Hittable& world, std::vector<std::vector<Color>> &img_
     // P3 for ppm, width and height, max_val for RGB channels
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
+#pragma omp parallel for
     for (int j = 0; j < image_height; ++j)
     {
-        std::clog << "\rLines pending for render: " << (image_height - j) << ' ' << std::flush;
+        std::clog << "\nLines pending for render: " << (image_height - j) << ' ';
         for (int i = 0; i < image_width; ++i) 
         {
             Color pixel_color(0, 0, 0);
@@ -191,6 +192,6 @@ void Camera::render(const Hittable& world, std::vector<std::vector<Color>> &img_
             img_arr[j][i] = pixel_samples_scale * pixel_color;
         }
     }
-    std::clog << "\rDone.                      \n";
+    std::clog << "\nDone.\n";
 }
 

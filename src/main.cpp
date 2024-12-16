@@ -19,7 +19,7 @@
 
 int main() {
     // Image specs
-    int image_width = 400;
+    int image_width = 1200;
     auto aspect_ratio = 16.0 / 9.0;
     auto camera_center = Point3(0, 0, 0);
     
@@ -30,8 +30,8 @@ int main() {
     Camera cam;
     cam.set_aspect_ratio(aspect_ratio);
     cam.set_image_width(image_width);
-    cam.set_samples_per_pixel(20);
-    cam.set_max_depth(10);
+    cam.set_samples_per_pixel(100);
+    cam.set_max_depth(50);
     cam.set_vfov(20);
     cam.set_camera_orientation(Point3(13, 2, 3), Point3(0, 0, 0), Vec3(0, 1, 0));
     cam.set_defocus_blur(0.6, 10.0);
