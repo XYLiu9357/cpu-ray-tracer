@@ -8,15 +8,17 @@
 #include <memory>
 
 #include "camera/camera.hpp"
+#include "elements/color.hpp"
 #include "elements/material.hpp"
 #include "hittables/hittable.hpp"
 #include "hittables/hittable-list.hpp"
 #include "hittables/sphere.hpp"
 #include "utils/vec3.hpp"
 #include "utils/worldgen.hpp"
+#include "utils/io.hpp"
 
 int main() {
-    // image specs
+    // Image specs
     int image_width = 400;
     auto aspect_ratio = 16.0 / 9.0;
     auto camera_center = Point3(0, 0, 0);
@@ -33,6 +35,9 @@ int main() {
     cam.set_vfov(20);
     cam.set_camera_orientation(Point3(13, 2, 3), Point3(0, 0, 0), Vec3(0, 1, 0));
     cam.set_defocus_blur(0.6, 10.0);
-    cam.render(world);
+    
+    std::vector<std::vector<Color>> img_arr;
+    cam.render(world, img_arr);
+    write_ppm(std::cout, img_arr);
 }
 

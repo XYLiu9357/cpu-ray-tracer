@@ -21,8 +21,15 @@ set(SRC_FILES
     src/utils/vec3.cpp
     src/utils/interval.cpp
     src/utils/worldgen.cpp
+    src/utils/io.cpp
 )
 
 # build executables
 add_executable(ray-tracer ${SRC_FILES})
+
+# link openmp
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(ray-tracer PUBLIC OpenMP::OpenMP_CXX)
+endif()
 

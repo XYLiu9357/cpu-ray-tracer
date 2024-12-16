@@ -168,10 +168,11 @@ Color Camera::ray_color(const Ray& r, int depth, const Hittable& world) const
 }
 
 // Render
-void Camera::render(const Hittable& world)
+void Camera::render(const Hittable& world, std::vector<std::vector<Color>> &img_arr)
 {
     // Initialize parameters
-    this->init();
+    init();
+    img_arr.resize(image_height, std::vector<Color>(image_width, Color(0, 0, 0)));
 
     // P3 for ppm, width and height, max_val for RGB channels
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
@@ -187,7 +188,7 @@ void Camera::render(const Hittable& world)
                 Ray r = get_ray(i, j);
                 pixel_color += ray_color(r, max_depth, world);
             }
-            write_color(std::cout, pixel_samples_scale * pixel_color);
+            img_arr[j][i] = pixel_samples_scale * pixel_color;
         }
     }
     std::clog << "\rDone.                      \n";

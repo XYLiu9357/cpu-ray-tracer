@@ -9,6 +9,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <vector>
+
 #include "elements/color.hpp"
 #include "elements/ray.hpp"
 #include "elements/material.hpp"
@@ -76,7 +78,7 @@ public:
     void set_max_depth(int max_depth);
 
     // Render image and output to stdout
-    void render(const Hittable& world);
+    void render(const Hittable& world, std::vector<std::vector<Color>> &img_arr);
 };
 
 #endif
